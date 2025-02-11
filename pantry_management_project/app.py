@@ -1,5 +1,5 @@
 import streamlit as st
-from crew_pantry import handle_chat
+from crew_pantry import kickoff  # ✅ استدعاء CrewAI مباشرةً
 import pantry_manager
 
 # ✅ إعداد التطبيق
@@ -12,7 +12,7 @@ st.title("🤖 إدارة المخزن الذكي")
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []  # ✅ تخزين المحادثات السابقة
 
-# ✅ تنظيم الصفحة باستخدام الأعمدة (Sidebar + Main Content)
+# ✅ تنظيم الصفحة باستخدام الشريط الجانبي (Sidebar)
 with st.sidebar:
     st.markdown("## 📥 **إضافة / تحديث منتج**")
     
@@ -36,14 +36,14 @@ for message in st.session_state.chat_history:
         st.markdown(message["content"])
 
 # ✅ إدخال المستخدم
-user_input = st.chat_input("💡 اسأل عن المخزن، المنتجات الناقصة، أو قائمة التسوق:")
+user_input = st.chat_input("💡 اسأل عن المخزن، المنتجات الناقصة، أو أي شيء آخر:")
 
 if user_input:
     # ✅ عرض رسالة المستخدم مباشرةً
     st.chat_message("user").markdown(user_input)
     
-    # ✅ إرسال السؤال إلى الذكاء الاصطناعي
-    response = handle_chat(user_input)
+    # ✅ إرسال السؤال إلى CrewAI
+    response = kickoff(user_input)  
     
     # ✅ عرض رد الذكاء الاصطناعي مباشرةً
     with st.chat_message("assistant"):
@@ -53,19 +53,9 @@ if user_input:
     st.session_state.chat_history.append({"role": "user", "content": user_input})
     st.session_state.chat_history.append({"role": "assistant", "content": response})
 
-# ✅ تقارير المخزن تظهر دائمًا أسفل المحادثة
-st.markdown("### 📊 **تقارير المخزن**")
+# ✅ عرض تقرير المخزن فقط
+st.markdown("### 📊 **تقرير المخزن**")
 
-col1, col2, col3 = st.columns(3)  # ✅ توزيع التقارير على 3 أعمدة
-
-with col1:
-    st.markdown("#### 📦 **تقرير حالة المخزن**")
-    st.markdown(f"🔍 **{handle_chat('المخزن')}**")
-
-with col2:
-    st.markdown("#### ⚠️ **المنتجات القريبة من النفاد**")
-    st.markdown(f"❗ **{handle_chat('المنتجات الناقصة')}**")
-
-with col3:
-    st.markdown("#### 📝 **قائمة التسوق**")
-    st.markdown(f"🛒 **{handle_chat('قائمة التسوق')}**")
+# ✅ استدعاء CrewAI لإحضار تقرير المخزن وعرضه كجدول Markdown
+inventory_report = kickoff("ممكن تقرير عن المخزن؟")  
+st.markdown(inventory_report)
