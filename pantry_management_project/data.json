@@ -1,0 +1,37 @@
+{
+    "تفاح": {
+        "min_quantity": 10,
+        "current_quantity": 20,
+        "price_per_unit": 7.0
+    },
+    "طماطم": {
+        "min_quantity": 4,
+        "current_quantity": 6,
+        "price_per_unit": 12.0
+    },
+    "بصل": {
+        "min_quantity": 5,
+        "current_quantity": 2,
+        "price_per_unit": 6.0
+    },
+    "خوخ": {
+        "min_quantity": 4,
+        "current_quantity": 12,
+        "price_per_unit": 18.0
+    },
+    "خيار": {
+        "min_quantity": 1,
+        "current_quantity": 10,
+        "price_per_unit": 2.0
+    },
+    "عنب": {
+        "min_quantity": 7,
+        "current_quantity": 12,
+        "price_per_unit": 12.0
+    },
+    "خرشوف": {
+        "min_quantity": 1,
+        "current_quantity": 3,
+        "price_per_unit": 3.0
+    }
+}
