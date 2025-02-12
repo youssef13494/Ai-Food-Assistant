@@ -40,6 +40,20 @@ with st.sidebar:
             st.success("✅ **تم تحديث المخزن بنجاح!**")
         else:
             st.warning("⚠️ **يرجى إدخال جميع البيانات بشكل صحيح!**")
+    st.markdown("## 🔻 **استهلاك منتج**")
+
+    consumed_product = st.text_input("📝 **اسم المنتج المستهلك:**")
+    consumed_quantity = st.number_input("⚠️ **الكمية المستهلكة:**", min_value=1, step=1)
+
+    if st.button("❌ **استهلاك المنتج**"):
+        if consumed_product and consumed_quantity > 0:
+            success = pantry_manager.consume_product(consumed_product, consumed_quantity)
+            if success:
+                st.success(f"✅ **تم استهلاك {consumed_quantity} من {consumed_product} بنجاح!**")
+            else:
+                st.warning("⚠️ **الكمية المتاحة غير كافية أو المنتج غير موجود!**")
+        else:
+            st.warning("⚠️ **يرجى إدخال اسم المنتج والكمية المستهلكة بشكل صحيح!**")
 
 # ✅ عرض المحادثات مثل ChatGPT
 st.markdown("### 💬 **محادثة مع الذكاء الاصطناعي**")
@@ -81,6 +95,43 @@ if user_input:
 
 # ✅ عرض تقرير المخزن فقط
 st.markdown("### 📊 **تقرير المخزن**")
+
+import streamlit as st
+import json
+import pandas as pd
+import altair as alt
+
+with open('data.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+
+items = []
+for item_name, details in data.items():
+    details['item'] = item_name  
+    items.append(details)
+df = pd.DataFrame(items)
+df['color'] = df.apply(
+    lambda row: 'red' if row['current_quantity'] <= row['min_quantity'] * 1.1 else 'green',
+    axis=1
+)
+
+st.write("Inventory Data")
+
+chart = alt.Chart(df).mark_bar().encode(
+    x=alt.X('item:N', title='المكونات'),
+    y=alt.Y('current_quantity:Q', title='الكمية'),
+    color=alt.Color('color:N', scale=None)
+).properties(
+    title='المخزن'
+).configure_title(
+    anchor='middle',
+    fontSize=30 
+).configure_axis(
+    titleFontSize=20,   
+    labelFontSize=16    
+)
+st.altair_chart(chart, use_container_width=True)
+
 
 # ✅ استدعاء CrewAI لإحضار تقرير المخزن وعرضه كجدول Markdown
 inventory_report = kickoff("ممكن تقرير عن المخزن؟")  

@@ -41,7 +41,7 @@
     },
     "لبن": {
         "min_quantity": 9,
-        "current_quantity": 10,
+        "current_quantity": 9,
         "price_per_unit": 29.0
     },
     "سبانخ": {
