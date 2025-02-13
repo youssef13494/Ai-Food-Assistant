@@ -2,22 +2,21 @@ import os
 import json
 from crewai import Agent, Crew, Task, LLM
 from dotenv import load_dotenv
-from tools import run_rag, load_json_file  # ✅ أدوات تحميل البيانات من الكتب والمخزن
-
-# ✅ تحميل متغيرات البيئة
+from tools import run_rag, load_json_file,run_general_nutrition_query
+#✅ تحميل متغيرات البيئة
 load_dotenv()
 
 # 🔹 Set API Keys
-os.environ["OPENAI_API_KEY"] = "66e99044-a4d8-4a6c-aacd-68f0546ccbca"
+os.environ["OPENAI_API_KEY"] = "46dc1688-0256-40fe-bb3d-1596e2dd5579"
 os.environ["OPENAI_API_BASE"] = "https://api.sambanova.ai/v1"
-os.environ["OPENAI_MODEL_NAME"] = "sambanova/Meta-Llama-3.3-70B-Instruct"
-
+os.environ["OPENAI_MODEL_NAME"] = "sambanova/Qwen2.5-72B-Instruct"
 
 llm = LLM(
     model=os.environ["OPENAI_MODEL_NAME"],
-    temperature=0.4,
+    temperature=0.2,
     api_key=os.environ["OPENAI_API_KEY"],
-    base_url=os.environ["OPENAI_API_BASE"]
+    base_url=os.environ["OPENAI_API_BASE"],
+    max_tokens=2000
 )
 
 ### ✅ إنشاء الوكلاء (Agents)
@@ -30,6 +29,7 @@ def create_food_info_agent():
         backstory="خبير تغذية متخصص في تحليل البيانات الغذائية من الكتب والمصادر العلمية باستخدام الذكاء الاصطناعي.",
         verbose=True,
         memory=True,
+        inputs=["prompt"],
         tools=[run_rag]
     )
 
@@ -41,6 +41,7 @@ def create_meal_planner_agent():
         backstory="أخصائي تغذية يساعد المستخدمين على تحقيق أهدافهم الصحية من خلال تقديم وجبات متوازنة تعتمد على السعرات الحرارية والمكونات المتاحة.",
         verbose=True,
         memory=True,
+        inputs=["prompt"],
         tools=[run_rag, load_json_file]
     )
 
@@ -55,15 +56,30 @@ def create_inventory_manager_agent():
         tools=[load_json_file]
     )
 
-### ✅ إنشاء المهام (Tasks)
+# 🔹 وكيل 4: مستشار التغذية للإجابة عن الأسئلة الغذائية العامة 🥦
+def create_nutrition_advisor_agent():
+    return Agent(
 
-# 🔹 مهمة 1: البحث عن المعلومات الغذائية من الكتب 📖
+        role="Nutrition Advisor",
+        goal="""
+                    تقديم معلومات غذائية دقيقة ومبسطة حول الأطعمة والمكونات الغذائية المختلفة والرد علي المستخدم 
+                    سؤال المستخدم :{prompt}
+
+            """,
+        backstory=" خبير تغذية يساعد المستخدمين على فهم الفوائد الغذائية للأطعمة، والسعرات الحرارية، وتأثير التغذية على الصحة العامة وذلك من خلال الرد  علي سؤال المستخدم .",
+        verbose=True,
+        memory=True,
+        tools=[run_general_nutrition_query]
+    )
+
+
+### ✅ إنشاء المهام (Tasks)
 def create_food_info_task(agent):
     return Task(
         description="🍽️ استخراج معلومات غذائية دقيقة بناءً على الكتب المتاحة، مع حساب السعرات الحرارية المطلوبة.",
         expected_output="معلومات غذائية دقيقة تعتمد على البيانات المستخرجة من الكتب.",
         agent=agent,
-        tools=[run_rag],
+        tools=[run_rag],  # ✅ لا حاجة لتمرير `inputs`
         inputs=["prompt"]
     )
 
@@ -87,7 +103,7 @@ def create_meal_planning_task(agent, food_info_agent):
         expected_output="📊 تقرير النظام الغذائي النهائي كـ Markdown، دون الحاجة إلى استدعاء `Output Formatter`.",
         agent=agent,
         tools=[run_rag, load_json_file],  # ✅ تحميل المعلومات والمخزون مرة واحدة فقط
-        inputs=["query"],
+        inputs=["prompt"],
         depends_on=[food_info_agent]  # ✅ يعتمد فقط على بيانات `Food Info Agent`
     )
 
@@ -98,26 +114,36 @@ def create_inventory_task(agent):
         expected_output="📊 تقرير المخزن كجدول Markdown يعرض الكميات والمكونات الناقصة.",
         agent=agent,
         tools=[load_json_file],  # ✅ استدعاء بيانات المخزن
-        inputs=["query"]
+        inputs=["prompt"]
     )
 
+# 🔹 مهمة 4: الإجابة عن الأسئلة الغذائية العامة 🥗
+def create_nutrition_info_task(agent):
+    return Task(
+        description="🥦 أجب عن أي أسئلة تتعلق بالتغذية مثل الفوائد الغذائية للأطعمة، عدد السعرات الحرارية، والعناصر الغذائية المهمة.",
+        expected_output="معلومات غذائية دقيقة بناءً على البيانات المتاحة، مع مصادر إن أمكن.",
+        agent=agent,
+       # tools=[run_general_nutrition_query],  # ✅ استدعاء أداة البحث
+        inputs=["prompt"],
+        tools=[run_general_nutrition_query]
+    )
 
 
 def detect_task_type(prompt):
     food_keywords = ["سعرات", "وجبة", "نظام غذائي", "طعام", "غذاء", "حمية"]
     inventory_keywords = ["مخزن", "مكونات", "المتاح", "المنتجات", "المخزون"]
+    nutrition_keywords = ["كيف","فوائد","اضرار","مخاطر","هل","ماهي", "السعرات الحرارية", "البروتين", "الكربوهيدرات", "الفيتامينات", "الألياف", "الصوديوم"]
 
     prompt_lower = prompt.lower()
 
-    if any(keyword in prompt_lower for keyword in food_keywords):
+    if any(keyword in prompt_lower for keyword in nutrition_keywords):
+        return "nutrition"
+    elif any(keyword in prompt_lower for keyword in food_keywords):
         return "food"
     elif any(keyword in prompt_lower for keyword in inventory_keywords):
         return "inventory"
     else:
         return "all"
-
-
-### ✅ تشغيل CrewAI
 
 def kickoff(prompt):
     task_type = detect_task_type(prompt)
@@ -126,26 +152,29 @@ def kickoff(prompt):
     food_info_agent = create_food_info_agent()
     meal_planner_agent = create_meal_planner_agent()
     inventory_manager_agent = create_inventory_manager_agent()
+    nutrition_advisor_agent = create_nutrition_advisor_agent()  # ✅ إضافة وكيل التغذية الجديد
 
     # ✅ إنشاء المهام
     food_info_task = create_food_info_task(food_info_agent)
     meal_planning_task = create_meal_planning_task(meal_planner_agent, food_info_agent)
     inventory_task = create_inventory_task(inventory_manager_agent)
+    nutrition_info_task = create_nutrition_info_task(nutrition_advisor_agent)  # ✅ إضافة مهمة التغذية الجديدة
 
     # ✅ اختيار المهام بناءً على النوع المكتشف تلقائيًا
     if task_type == "food":
         tasks = [food_info_task, meal_planning_task]  # ✅ النظام الغذائي فقط
     elif task_type == "inventory":
         tasks = [inventory_task]  # ✅ تقرير المخزن فقط
+    elif task_type == "nutrition":
+        tasks = [nutrition_info_task]  # ✅ الإجابة عن الأسئلة الغذائية فقط
     else:
-        tasks = [food_info_task, meal_planning_task, inventory_task]  # ✅ تشغيل الكل لو مش واضح
+        tasks = [food_info_task, meal_planning_task, inventory_task, nutrition_info_task]  # ✅ تشغيل الكل لو مش واضح
 
     # ✅ تشغيل CrewAI بطريقة مبسطة
     pantry_crew = Crew(
-        agents=[food_info_agent, meal_planner_agent, inventory_manager_agent],
+        agents=[food_info_agent, meal_planner_agent, inventory_manager_agent, nutrition_advisor_agent],  # ✅ إضافة الوكيل الجديد
         tasks=tasks,
-        goal="تقديم نظام غذائي صحي بناءً على السعرات الحرارية المطلوبة وإدارة المخزون بفعالية."
+        goal="تقديم نظام غذائي صحي، إدارة المخزون، والإجابة عن الأسئلة الغذائية."
     )
-
-    return pantry_crew.kickoff(inputs={"prompt": prompt})
-
+    input_data = {"prompt": prompt}
+    return pantry_crew.kickoff(inputs=input_data)

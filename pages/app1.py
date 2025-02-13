@@ -2,6 +2,9 @@ import streamlit as st
 from crew_pantry import kickoff  # ✅ استدعاء CrewAI مباشرةً
 import pantry_manager
 from streamlit_mic_recorder import speech_to_text
+import json
+import pandas as pd
+import altair as alt
 
 # ✅ إعداد التطبيق
 st.set_page_config(page_title="📦 إدارة المخزن الذكي", layout="wide")
@@ -58,48 +61,10 @@ with st.sidebar:
 # ✅ عرض المحادثات مثل ChatGPT
 st.markdown("### 💬 **محادثة مع الذكاء الاصطناعي**")
 
-for message in st.session_state.chat_history:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-col1, col2 = st.columns([3, 1])
-with col1:
-    user_input = st.chat_input("💡 اسأل عن المخزن، المنتجات الناقصة، أو قائمة التسوق:")
-
-with col2:
-    voice_input = record_voice(language=language)
-    if voice_input:
-        st.success("🎤 تم تسجيل الصوت بنجاح!")
-# ✅ إدخال المستخدم
-# user_input = st.chat_input("💡 اسأل عن المخزن، المنتجات الناقصة، أو أي شيء آخر:")
-# ✅ معالجة إدخال المستخدم (نص أو صوت)
-if user_input or voice_input:
-    final_input = user_input if user_input else voice_input
-    st.chat_message("user").markdown(final_input)
-    user_input=final_input
-
-if user_input:
-    # ✅ عرض رسالة المستخدم مباشرةً
-    st.chat_message("user").markdown(user_input)
-    
-    # ✅ إرسال السؤال إلى CrewAI
-    response = kickoff(user_input)  
-    
-    # ✅ عرض رد الذكاء الاصطناعي مباشرةً
-    with st.chat_message("assistant"):
-        st.markdown(response)
-
-    # ✅ حفظ المحادثة في الجلسة حتى تبقى معروضة
-    st.session_state.chat_history.append({"role": "user", "content": user_input})
-    st.session_state.chat_history.append({"role": "assistant", "content": response})
 
 # ✅ عرض تقرير المخزن فقط
 st.markdown("### 📊 **تقرير المخزن**")
 
-import streamlit as st
-import json
-import pandas as pd
-import altair as alt
 
 with open('data.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
@@ -132,7 +97,57 @@ chart = alt.Chart(df).mark_bar().encode(
 )
 st.altair_chart(chart, use_container_width=True)
 
+from tools import update_user_info  # ✅ استيراد دالة تحديث بيانات المستخدم
+
+# ✅ واجهة اختيار بيانات المستخدم
+st.sidebar.markdown("## 👤 **معلومات المستخدم**")
+age = st.sidebar.number_input("📅 **العمر:**", min_value=1, max_value=120, step=1)
+weight = st.sidebar.number_input("⚖️ **الوزن (كجم):**", min_value=1.0, max_value=300.0, step=0.1)
+height = st.sidebar.number_input("📏 **الطول (سم):**", min_value=50, max_value=250, step=1)
+status = st.sidebar.selectbox("🏥 **الحالة الصحية:**", ["طبيعي", "رياضي", "مريض"])
+
+if st.sidebar.button("✅ **حفظ البيانات**"):
+    update_user_info(age, weight, height, status)
+    st.sidebar.success("✅ **تم حفظ بيانات المستخدم!**")
+
+for message in st.session_state.chat_history:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+col1, col2 = st.columns([3, 1])
+with col1:
+    user_input = st.chat_input("💡 اسأل عن المخزن، المنتجات الناقصة، أو قائمة التسوق:")
+
+with col2:
+    voice_input = record_voice(language=language)
+    if voice_input:
+        st.success("🎤 تم تسجيل الصوت بنجاح!")
+
+
+# ✅ معالجة إدخال المستخدم (نص أو صوت)
+if voice_input:
+    final_input = voice_input
+    st.chat_message("user").markdown(final_input)
+    user_input=final_input
+
+if user_input:
+    # ✅ عرض رسالة المستخدم مباشرةً
+    st.chat_message("user").markdown(user_input)
+    
+    # ✅ إرسال السؤال إلى CrewAI
+    response = kickoff(user_input)  
+    
+    # ✅ عرض رد الذكاء الاصطناعي مباشرةً
+    with st.chat_message("assistant"):
+        st.markdown(response)
+
+    # ✅ حفظ المحادثة في الجلسة حتى تبقى معروضة
+    st.session_state.chat_history.append({"role": "user", "content": user_input})
+    st.session_state.chat_history.append({"role": "assistant", "content": response})
+
+
+
 
 # ✅ استدعاء CrewAI لإحضار تقرير المخزن وعرضه كجدول Markdown
-inventory_report = kickoff("ممكن تقرير عن المخزن؟")  
-st.markdown(inventory_report)
+#inventory_report = kickoff("ممكن تقرير عن المخزن؟")  
+#st.markdown(inventory_report)
