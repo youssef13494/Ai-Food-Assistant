@@ -6,9 +6,9 @@ from crewai import Agent, Task, Crew, LLM
 from dotenv import load_dotenv
 load_dotenv()
 # 🔹 Set API Keys
-os.environ["OPENAI_API_KEY"] = "66e99044-a4d8-4a6c-aacd-68f0546ccbca"
-os.environ["OPENAI_API_BASE"] = "https://api.sambanova.ai/v1"
-os.environ["OPENAI_MODEL_NAME"] = "sambanova/Meta-Llama-3.3-70B-Instruct"
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["OPENAI_API_BASE"] = os.getenv("OPENAI_API_BASE")
+os.environ["OPENAI_MODEL_NAME"] = os.getenv("OPENAI_MODEL_NAME")
 
 
 llm = LLM(
@@ -20,12 +20,12 @@ llm = LLM(
 
 
 # Streamlit UI
-st.title("🍽️ AI Culinary Assistant")
+st.title("🍽️ مساعد السعرات الحرارية الذكي")
 
 # User Input Fields
-dish_name = st.text_input("Enter Dish Name:")
-quan = st.text_input("Number of people:")
-calories = st.text_input("Desired Calories per Person:")
+dish_name = st.text_input("ادخل اسم الطبق")
+quan = st.text_input("عدد الافراد")
+calories = st.text_input("عدد السعرات للفرد")
 
 def my_crew(llm):
     # Define Agents
@@ -95,9 +95,9 @@ inputs = {
                 "quan": quan
             }
 
-st.subheader("Execute AI Culinary Tasks")
+st.subheader("تشغيل المساعد")
 crew = my_crew(llm)
-if st.button("Get Ingredients"):
+if st.button("الحصول علي الوصفة"):
     task_output = crew.kickoff(inputs=inputs)
     with st.spinner("Identifying ingredients..."):
         ingredients_result = crew.tasks[0].output.raw

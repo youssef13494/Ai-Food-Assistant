@@ -7,9 +7,9 @@ from tools import run_rag, load_json_file,run_general_nutrition_query
 load_dotenv()
 
 # 🔹 Set API Keys
-os.environ["OPENAI_API_KEY"] = "46dc1688-0256-40fe-bb3d-1596e2dd5579"
-os.environ["OPENAI_API_BASE"] = "https://api.sambanova.ai/v1"
-os.environ["OPENAI_MODEL_NAME"] = "sambanova/Qwen2.5-72B-Instruct"
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["OPENAI_API_BASE"] = os.getenv("OPENAI_API_BASE")
+os.environ["OPENAI_MODEL_NAME"] = os.getenv("OPENAI_MODEL_NAME")
 
 llm = LLM(
     model=os.environ["OPENAI_MODEL_NAME"],

@@ -50,9 +50,9 @@ llm = LLM(
 
 
 # 🔹 Set API Keys
-os.environ["OPENAI_API_KEY"] = "66e99044-a4d8-4a6c-aacd-68f0546ccbca"
-os.environ["OPENAI_API_BASE"] = "https://api.sambanova.ai/v1"
-os.environ["OPENAI_MODEL_NAME"] = "sambanova/Meta-Llama-3.3-70B-Instruct"
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["OPENAI_API_BASE"] = os.getenv("OPENAI_API_BASE")
+os.environ["OPENAI_MODEL_NAME"] = os.getenv("OPENAI_MODEL_NAME")
 
 
 llm1 = LLM(
@@ -184,8 +184,8 @@ def get_youtube_video_link(dish_name):
 
                                                      ###########################################################
 def main():
-    st.set_page_config(page_title="Nutritionist-Food-Recognition-APP", page_icon="🍲")
-    st.header("Your Dietitian and Nutritionist")
+    st.set_page_config(page_title="الطباخ الطعام", page_icon="🍲")
+    st.header("طاهي الطعام الذكي")
 
     uploaded_file = st.file_uploader("اختر صورة للطبق ...", type=["jpg", "jpeg", "png"])
 
