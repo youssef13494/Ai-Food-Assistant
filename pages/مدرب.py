@@ -74,7 +74,7 @@ training_plan_task = Task(
 # إنشاء Crew يحتوي على الـ Agent
 crew = Crew(agents=[diet_planner_agent,gym_trainer], tasks=[diet_plan_task,training_plan_task])
 
-st.title("🔥 حساب السعرات الحرارية اليومية")
+st.title("🔥 التغذية واللياقة")
 
 # إدخال نسبة الدهون والوزن
 fat = st.number_input("أدخل نسبة الدهون في جسمك (%)", min_value=0.0, max_value=100.0, value=15.0, step=0.1)

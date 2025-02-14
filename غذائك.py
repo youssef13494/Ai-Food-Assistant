@@ -1,15 +1,30 @@
 import streamlit as st
+import base64
 
-st.set_page_config(page_title="Multi-App", layout="wide")
+# يجب أن يكون أول أمر في الكود
+st.set_page_config(page_title="غذائك", layout="wide", page_icon="Images\\logo2.png")
 
-# إضافة اللوجو واسم المشروع في الأعلى
-col_logo, col_title = st.columns([1, 3])  # تخصيص نسبة العرض
+def add_bg_from_local(image_file):
+    with open(image_file, "rb") as img_file:
+        encoded_string = base64.b64encode(img_file.read()).decode()
+    
+    bg_style = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded_string}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }}
+    </style>
+    """
+    st.markdown(bg_style, unsafe_allow_html=True)
 
-with col_logo:
-    st.image("Images/logo2.png", width=400)  # استخدم مسار نسبي للصورة
 
-with col_title:
-    st.markdown("<h1 style='margin-top: 10px; '>غذائك</h1>", unsafe_allow_html=True)
+# استدعاء الدالة مع الصورة المحلية
+add_bg_from_local(r"Images\\logo2.png")  # تأكد أن الصورة في نفس مجلد الكود
+
+
 
 
 

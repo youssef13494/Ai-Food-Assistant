@@ -104,7 +104,7 @@ st.sidebar.markdown("## 👤 **معلومات المستخدم**")
 age = st.sidebar.number_input("📅 **العمر:**", min_value=1, max_value=120, step=1)
 weight = st.sidebar.number_input("⚖️ **الوزن (كجم):**", min_value=1.0, max_value=300.0, step=0.1)
 height = st.sidebar.number_input("📏 **الطول (سم):**", min_value=50, max_value=250, step=1)
-status = st.sidebar.selectbox("🏥 **الحالة الصحية:**", ["طبيعي", "رياضي", "مريض"])
+status = st.sidebar.selectbox("🏥 **الحالة الصحية:**", ["طفل", "سيدة", "شاب","سيدة حامل", "صاحب امراض مزمنة", "رياضي/رياضية","كبار سن"])
 
 if st.sidebar.button("✅ **حفظ البيانات**"):
     update_user_info(age, weight, height, status)
@@ -145,9 +145,3 @@ if user_input:
     st.session_state.chat_history.append({"role": "user", "content": user_input})
     st.session_state.chat_history.append({"role": "assistant", "content": response})
 
-
-
-
-# ✅ استدعاء CrewAI لإحضار تقرير المخزن وعرضه كجدول Markdown
-#inventory_report = kickoff("ممكن تقرير عن المخزن؟")  
-#st.markdown(inventory_report)

@@ -20,7 +20,7 @@ llm = LLM(
 
 
 # Streamlit UI
-st.title("🍽️ مساعد السعرات الحرارية الذكي")
+st.title("🍽️ وجبة محسوبة")
 
 # User Input Fields
 dish_name = st.text_input("ادخل اسم الطبق")

@@ -1,6 +1,5 @@
 import os
 from crewai.tools import tool
-from crewai_tools import PDFSearchTool
 import google.generativeai as genai
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
