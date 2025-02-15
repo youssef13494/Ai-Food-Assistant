@@ -1,7 +1,7 @@
 {
     "تفاح": {
         "min_quantity": 10,
-        "current_quantity": 20,
+        "current_quantity": 18,
         "price_per_unit": 7.0
     },
     "طماطم": {
@@ -53,5 +53,10 @@
         "min_quantity": 5,
         "current_quantity": 6,
         "price_per_unit": 24.0
+    },
+    "ليمون": {
+        "min_quantity": 4,
+        "current_quantity": 6,
+        "price_per_unit": 2.0000000000000004
     }
 }

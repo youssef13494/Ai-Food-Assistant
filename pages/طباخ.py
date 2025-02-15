@@ -8,6 +8,31 @@ import google.generativeai as genai
 from crewai import Agent,Task,Crew,LLM
 from googleapiclient.discovery import build
 import json
+import base64
+st.set_page_config(page_title="الطباخ الذكي", page_icon="🍲")
+
+
+def add_bg_from_local(image_file):
+    with open(image_file, "rb") as img_file:
+        encoded_string = base64.b64encode(img_file.read()).decode()
+    
+    bg_style = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded_string}");
+        background-size: 100% auto;  /* Ensures full width while maintaining aspect ratio */
+        background-position: center;
+        background-repeat: no-repeat;
+    }}
+    </style>
+    """
+    st.markdown(bg_style, unsafe_allow_html=True)
+
+
+
+# استدعاء الدالة مع الصورة المحلية
+add_bg_from_local(r"Images\\home2.jpg")  # تأكد أن الصورة في نفس مجلد الكود
+
 
 with open("data.json", "r", encoding="utf-8") as f:
     data = json.load(f)
@@ -28,6 +53,7 @@ llm = LLM(
     base_url=os.environ["OPENAI_API_BASE"],
     max_tokens=1000
 )
+
 
 
 # Function to get the response from Gemini
@@ -137,7 +163,6 @@ def get_youtube_video_link(dish_name):
 
                                                      ###########################################################
 def main():
-    st.set_page_config(page_title="الطباخ الذكي", page_icon="🍲")
     st.header("الطباخ الذكي")
     st.markdown("### 📸 حمّل صورة الطبق")  
     uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], label_visibility="collapsed")  

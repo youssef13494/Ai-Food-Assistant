@@ -2,6 +2,29 @@ import os
 import streamlit as st
 import google.generativeai as genai
 from crewai import Agent, Task, Crew, LLM
+import base64
+
+
+def add_bg_from_local(image_file):
+    with open(image_file, "rb") as img_file:
+        encoded_string = base64.b64encode(img_file.read()).decode()
+    
+    bg_style = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded_string}");
+        background-size: 100% auto;  /* Ensures full width while maintaining aspect ratio */
+        background-position: center;
+        background-repeat: no-repeat;
+    }}
+    </style>
+    """
+    st.markdown(bg_style, unsafe_allow_html=True)
+
+
+
+# استدعاء الدالة مع الصورة المحلية
+add_bg_from_local(r"Images\\home2.jpg")  # تأكد أن الصورة في نفس مجلد الكود
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -99,12 +122,6 @@ st.subheader("تشغيل المساعد")
 crew = my_crew(llm)
 if st.button("الحصول علي الوصفة"):
     task_output = crew.kickoff(inputs=inputs)
-    with st.spinner("Identifying ingredients..."):
-        ingredients_result = crew.tasks[0].output.raw
-    st.success("Ingredients Identified!")
-    st.write(ingredients_result)
-    st.subheader("السعرات الحرارية للمكونات:")
-    st.write(crew.tasks[1].output.raw)  # Display the result # Fetching the first (and only) task's output
     st.subheader("الوصفة الجديدة:")
     st.write(crew.tasks[2].output.raw)  # Display the result # Fetching the first (and only) task's output
 

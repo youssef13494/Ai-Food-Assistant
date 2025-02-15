@@ -5,9 +5,31 @@ from streamlit_mic_recorder import speech_to_text
 import json
 import pandas as pd
 import altair as alt
+import base64
 
-# ✅ إعداد التطبيق
 st.set_page_config(page_title="📦 إدارة المخزن الذكي", layout="wide")
+
+def add_bg_from_local(image_file):
+    with open(image_file, "rb") as img_file:
+        encoded_string = base64.b64encode(img_file.read()).decode()
+    
+    bg_style = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded_string}");
+        background-size: 100% auto;  /* Ensures full width while maintaining aspect ratio */
+        background-position: center;
+        background-repeat: no-repeat;
+    }}
+    </style>
+    """
+    st.markdown(bg_style, unsafe_allow_html=True)
+
+
+
+# استدعاء الدالة مع الصورة المحلية
+add_bg_from_local(r"Images\\home2.jpg")  # تأكد أن الصورة في نفس مجلد الكود
+
 # ✅ وظيفة تسجيل الصوت
 def record_voice(language="ar"):
     text = speech_to_text(
