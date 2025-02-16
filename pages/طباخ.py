@@ -55,7 +55,7 @@ llm = LLM(
 )
 
 
-
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 # Function to get the response from Gemini
 def get_gemini_response(input, image, prompt):
     model = genai.GenerativeModel("gemini-1.5-flash")
