@@ -22,10 +22,10 @@
 ## 📽️ فيديوهات المشروع
 
 ### 🎬 إعلان المشروع
-[![مشاهدة الإعلان](https://img.youtube.com/vi/VIDEO_ID_1/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID_1)
+[![مشاهدة الإعلان](https://img.youtube.com/vi/VIDEO_ID_1/0.jpg)](https://www.youtube.com/watch?v=P-fPEAGE_qs&ab_channel=YoussefTimsah)
 
 ### 💡 عرض المشروع أثناء التشغيل
-[![مشاهدة العرض](https://img.youtube.com/vi/VIDEO_ID_2/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID_2)
+[![مشاهدة العرض](https://img.youtube.com/vi/VIDEO_ID_2/0.jpg)](https://www.youtube.com/watch?v=m9hsv9__c8U&ab_channel=YoussefTimsah)
 
 *(يرجى استبدال **`VIDEO_ID_1`** و **`VIDEO_ID_2`** بمعرف الفيديو الفعلي بعد رفعه على YouTube)*
 
