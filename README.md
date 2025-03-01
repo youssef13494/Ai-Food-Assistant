@@ -33,7 +33,7 @@
 
 1. **نسخ المستودع**
    ```bash
-   git clone [[https://github.com/USERNAME/REPO_NAME.git]]
+   git clone https://github.com/USERNAME/REPO_NAME.git
    ```
 2. **تثبيت المتطلبات**
    ```bash
