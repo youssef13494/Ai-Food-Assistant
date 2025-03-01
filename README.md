@@ -33,8 +33,7 @@
 
 1. **نسخ المستودع**
    ```bash
-   git clone [https://github.com/USERNAME/REPO_NAME.git
-   cd REPO_NAME](https://github.com/youssef13494/Ai-Food-Assistant.git)
+   git clone [[https://github.com/USERNAME/REPO_NAME.git]]
    ```
 2. **تثبيت المتطلبات**
    ```bash
