@@ -33,8 +33,8 @@
 
 1. **نسخ المستودع**
    ```bash
-   git clone https://github.com/USERNAME/REPO_NAME.git
-   cd REPO_NAME
+   git clone [https://github.com/USERNAME/REPO_NAME.git
+   cd REPO_NAME](https://github.com/youssef13494/Ai-Food-Assistant.git)
    ```
 2. **تثبيت المتطلبات**
    ```bash
@@ -51,4 +51,4 @@
 
 ## 📧 تواصل معنا
 
-لأي استفسارات، يمكنك التواصل عبر **[youssefhatem206@gmail.com]** أو فتح تذكرة دعم في المستودع.
+لأي استفسارات، يمكنك التواصل عبر **[youssefhatem206@gmail.com]**
